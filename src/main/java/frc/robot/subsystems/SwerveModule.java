@@ -3,7 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
+import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.motorcontrol.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,10 +14,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 public class SwerveModule {
-  private final Spark m_driveMotor;
-  private final Spark m_turningMotor;
+  // private final Spark m_driveMotor;
+  // private final Spark m_turningMotor;
+  private final TalonFX m_driveMotor;
+  private final TalonFX m_turningMotor;
 
   private final Encoder m_driveEncoder;
   private final Encoder m_turningEncoder;
@@ -51,8 +55,10 @@ public class SwerveModule {
       int[] turningEncoderChannels,
       boolean driveEncoderReversed,
       boolean turningEncoderReversed) {
-    m_driveMotor = new Spark(driveMotorChannel);
-    m_turningMotor = new Spark(turningMotorChannel);
+    // m_driveMotor = new Spark(driveMotorChannel);
+    // m_turningMotor = new Spark(turningMotorChannel);
+    m_driveMotor = new TalonFX(driveMotorChannel);
+    m_turningMotor = new TalonFX(turningMotorChannel);
 
     m_driveEncoder = new Encoder(driveEncoderChannels[0], driveEncoderChannels[1]);
 
@@ -118,8 +124,8 @@ public class SwerveModule {
         m_turningPIDController.calculate(m_turningEncoder.getDistance(), state.angle.getRadians());
 
     // Calculate the turning motor output from the turning PID controller.
-    m_driveMotor.set(driveOutput);
-    m_turningMotor.set(turnOutput);
+    m_driveMotor.set(ControlMode.PercentOutput, driveOutput);
+    m_turningMotor.set(ControlMode.PercentOutput, turnOutput);
   }
 
   /** Zeroes all the SwerveModule encoders. */
